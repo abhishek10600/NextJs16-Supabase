@@ -4,13 +4,28 @@ import React, { ReactNode, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { AuthModal } from "./AuthModal";
+import { addProduct } from "@/app/actions";
+import { toast } from "sonner";
 
-const AddProductForm = ({ user }) => {
+const AddProductForm = ({ user }: any) => {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
+    const result = await addProduct(url);
+
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success(result.message || "Product tracked successfully!");
+      setUrl("");
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -42,8 +57,6 @@ const AddProductForm = ({ user }) => {
           </Button>
         </div>
       </form>
-
-      {/* Auth Modal */}
     </>
   );
 };
